@@ -1,0 +1,48 @@
+<!-- 文件夹详情页 - 子待办列表 -->
+<view class="page-wrapper">
+  <!-- 顶部输入区 -->
+  <view class="input-bar">
+    <input
+      class="todo-input"
+      placeholder="添加详细待办..."
+      placeholder-class="placeholder"
+      value="{{inputText}}"
+      bindinput="onInput"
+      bindconfirm="addChild"
+      confirm-type="done"
+    />
+    <button class="add-btn" bindtap="addChild" disabled="{{!inputText}}">添加</button>
+  </view>
+
+  <!-- 统计条 -->
+  <view class="stats-bar" wx:if="{{children.length}}">
+    <text class="stats-text">{{doneCount}}/{{children.length}} 已完成</text>
+    <text class="stats-clear" bindtap="clearDoneChildren">清除已完成条目</text>
+  </view>
+
+  <!-- 子待办列表 -->
+  <scroll-view class="todo-list" scroll-y enhanced show-scrollbar="{{false}}">
+    <view
+      class="todo-item {{item.done ? 'done' : ''}}"
+      wx:for="{{children}}"
+      wx:key="id"
+    >
+      <view class="todo-left" bindtap="toggleChild" data-id="{{item.id}}">
+        <view class="check-circle {{item.done ? 'checked' : ''}}">
+          <text class="check-mark" wx:if="{{item.done}}">✓</text>
+        </view>
+        <text class="todo-text">{{item.text}}</text>
+      </view>
+      <view class="delete-btn" bindtap="deleteChild" data-id="{{item.id}}">
+        <text class="delete-icon">✕</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!children.length}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">还没有详细待办</text>
+      <text class="empty-hint">在上方添加具体的待办事项</text>
+    </view>
+  </scroll-view>
+</view>

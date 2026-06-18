@@ -1,0 +1,63 @@
+<!-- 待办清单首页 - 待办事项列表 -->
+<view class="page-wrapper">
+  <!-- 统计条 -->
+  <view class="stats-bar" wx:if="{{todos.length}}">
+    <text class="stats-text">{{doneCount}}/{{todos.length}} 个事项已完成</text>
+  </view>
+
+  <!-- 事项列表 -->
+  <scroll-view class="todo-list" scroll-y enhanced show-scrollbar="{{false}}">
+    <view
+      class="todo-item {{item.pinned ? 'pinned' : ''}} {{item._done ? 'done' : ''}}"
+      wx:for="{{todos}}"
+      wx:key="id"
+      bindtap="openDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="todo-left">
+        <!-- 固定项：自定义图标 -->
+        <view class="pinned-icon" wx:if="{{item.pinned}}" style="background-color: {{item.bgColor}};">{{item.icon}}</view>
+        <!-- 普通项：状态方块 -->
+        <view class="status-square {{item._done ? 'done-square' : ''}}" wx:else></view>
+        <view class="todo-info">
+          <text wx:if="{{item.pinned}}" class="todo-text pinned-text {{item.fontClass}}" style="color: {{item.color}};">{{item.text}}</text>
+          <text wx:else class="todo-text">{{item.text}}</text>
+          <text class="todo-progress">{{item._progress}}</text>
+        </view>
+      </view>
+      <!-- 未完成提示（未全部完成时显示） -->
+      <text class="unfinished-hint" wx:if="{{item._unfinished > 0}}">还有{{item._unfinished}}条未完成</text>
+      <!-- 固定项不显示删除按钮 -->
+      <view class="delete-btn" catchtap="deleteTodo" data-id="{{item.id}}" wx:if="{{!item.pinned}}">
+        <text class="delete-icon">✕</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!todos.length}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">还没有待办事项</text>
+      <text class="empty-hint">在上方输入框新建一个，然后添加详细待办</text>
+    </view>
+
+    <!-- 底部留白，避免被输入区遮挡 -->
+    <view style="height: 160rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部输入区（距底部 20vh） -->
+  <view class="bottom-bar">
+    <view class="input-bar">
+      <input
+        class="todo-input"
+        placeholder="新建待办事项..."
+        placeholder-class="placeholder"
+        value="{{inputText}}"
+        bindinput="onInput"
+        bindconfirm="addTodo"
+        confirm-type="done"
+      />
+      <view class="add-btn {{inputText ? '' : 'disabled'}}" bindtap="addTodo">+</view>
+    </view>
+    <view class="bottom-spacer"></view>
+  </view>
+</view>
